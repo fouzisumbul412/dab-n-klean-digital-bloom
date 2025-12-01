@@ -5,7 +5,6 @@ import { Facebook, Instagram, Linkedin } from "lucide-react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-// ⬇️ Update this path to your real logo file if needed
 import dnkLogo from "/images/DNK-logo-new.png";
 
 export const Footer = () => {
