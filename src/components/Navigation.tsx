@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Menu, X, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 interface NavigationProps {
   onCartOpen: () => void;
@@ -19,36 +20,65 @@ export const Navigation = ({ onCartOpen, cartItemCount }: NavigationProps) => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass-strong">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md shadow-md">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <img src="/images/DNK-logo.webp" alt="DAB'N'KLEAN logo" className="h-8 w-auto object-contain" />
-          </div>
+          {/* Logo -> Home */}
+          <Link to="/" className="flex items-center">
+            <img
+              src="/images/DNK-logo-new.png"
+              alt="DAB'N'KLEAN logo"
+              className="h-8 w-auto object-contain"
+            />
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
-            <button onClick={() => scrollToSection("home")} className="text-foreground hover:text-primary transition-colors">
+            <Link
+              to="/"
+              className="text-foreground hover:text-primary transition-colors text-sm font-medium"
+            >
               Home
-            </button>
-            <button onClick={() => scrollToSection("about")} className="text-foreground hover:text-primary transition-colors">
+            </Link>
+
+            <Link
+              to="/about"
+              className="text-foreground hover:text-primary transition-colors text-sm font-medium"
+            >
               About
-            </button>
-            <button onClick={() => scrollToSection("products")} className="text-foreground hover:text-primary transition-colors">
+            </Link>
+
+            <button
+              onClick={() => scrollToSection("products")}
+              className="text-foreground hover:text-primary transition-colors text-sm font-medium"
+            >
               Products
             </button>
-            <button onClick={() => scrollToSection("quality")} className="text-foreground hover:text-primary transition-colors">
-              Quality & Sustainability
+            <button
+              onClick={() => scrollToSection("quality")}
+              className="text-foreground hover:text-primary transition-colors text-sm font-medium"
+            >
+              Quality &amp; Sustainability
             </button>
-            <button onClick={() => scrollToSection("b2b")} className="text-foreground hover:text-primary transition-colors">
+            <button
+              onClick={() => scrollToSection("b2b")}
+              className="text-foreground hover:text-primary transition-colors text-sm font-medium"
+            >
               B2B / Bulk
             </button>
-            <button onClick={() => scrollToSection("faq")} className="text-foreground hover:text-primary transition-colors">
+            <button
+              onClick={() => scrollToSection("faq")}
+              className="text-foreground hover:text-primary transition-colors text-sm font-medium"
+            >
               FAQ
             </button>
-            <button onClick={() => scrollToSection("contact")} className="text-foreground hover:text-primary transition-colors">
+            <button
+              onClick={() => scrollToSection("contact")}
+              className="text-foreground hover:text-primary transition-colors text-sm font-medium"
+            >
               Contact
             </button>
+
             <Button onClick={onCartOpen} variant="outline" className="relative">
               <ShoppingCart className="h-4 w-4 mr-2" />
               Enquiry Cart
@@ -62,7 +92,12 @@ export const Navigation = ({ onCartOpen, cartItemCount }: NavigationProps) => {
 
           {/* Mobile Menu Button */}
           <div className="flex items-center gap-2 md:hidden">
-            <Button onClick={onCartOpen} variant="ghost" size="icon" className="relative">
+            <Button
+              onClick={onCartOpen}
+              variant="ghost"
+              size="icon"
+              className="relative"
+            >
               <ShoppingCart className="h-5 w-5" />
               {cartItemCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs">
@@ -83,25 +118,48 @@ export const Navigation = ({ onCartOpen, cartItemCount }: NavigationProps) => {
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="md:hidden mt-4 pb-4 flex flex-col gap-3">
-            <button onClick={() => scrollToSection("home")} className="text-left text-foreground hover:text-primary transition-colors py-2">
+            <Link
+              to="/"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-left text-foreground hover:text-primary transition-colors py-2 text-sm font-medium"
+            >
               Home
-            </button>
-            <button onClick={() => scrollToSection("about")} className="text-left text-foreground hover:text-primary transition-colors py-2">
+            </Link>
+            <Link
+              to="/about"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-left text-foreground hover:text-primary transition-colors py-2 text-sm font-medium"
+            >
               About
-            </button>
-            <button onClick={() => scrollToSection("products")} className="text-left text-foreground hover:text-primary transition-colors py-2">
+            </Link>
+            <button
+              onClick={() => scrollToSection("products")}
+              className="text-left text-foreground hover:text-primary transition-colors py-2 text-sm font-medium"
+            >
               Products
             </button>
-            <button onClick={() => scrollToSection("quality")} className="text-left text-foreground hover:text-primary transition-colors py-2">
-              Quality & Sustainability
+            <button
+              onClick={() => scrollToSection("quality")}
+              className="text-left text-foreground hover:text-primary transition-colors py-2 text-sm font-medium"
+            >
+              Quality &amp; Sustainability
             </button>
-            <button onClick={() => scrollToSection("b2b")} className="text-left text-foreground hover:text-primary transition-colors py-2">
+            <button
+              onClick={() => scrollToSection("b2b")}
+              className="text-left text-foreground hover:text-primary transition-colors py-2 text-sm font-medium"
+            >
               B2B / Bulk
             </button>
-            <button onClick={() => scrollToSection("faq")} className="text-left text-foreground hover:text-primary transition-colors py-2">
+            <button
+              onClick={() => scrollToSection("faq")}
+              className="text-left text-foreground hover:text-primary transition-colors py-2 text-sm font-medium"
+            >
               FAQ
             </button>
-            <button onClick={() => scrollToSection("contact")} className="text-left text-foreground hover:text-primary transition-colors py-2">
+            <button
+              onClick={() => scrollToSection("contact")}
+              className="text-left text-foreground hover:text-primary transition-colors py-2 text-sm font-medium"
+            >
               Contact
             </button>
           </div>

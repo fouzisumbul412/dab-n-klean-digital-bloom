@@ -44,7 +44,7 @@ export const ProductCard = ({ product, onAddToEnquiry }: ProductCardProps) => {
   return (
     <div
       className="
-        glass-card rounded-2xl overflow-hidden
+        rounded-2xl overflow-hidden bg-blue-50
         transition-all duration-300 hover:scale-105
         h-full flex flex-col
       "
@@ -73,7 +73,7 @@ export const ProductCard = ({ product, onAddToEnquiry }: ProductCardProps) => {
         </p>
 
         {/* Key Features: ⌄  (no bg, hover color change) */}
-        <div className="mb-2">
+        {/* <div className="mb-2">
           <button
             type="button"
             onClick={() => setFeaturesOpen((prev) => !prev)}
@@ -115,7 +115,7 @@ export const ProductCard = ({ product, onAddToEnquiry }: ProductCardProps) => {
               </ul>
             </div>
           )}
-        </div>
+        </div> */}
 
         {/* (Optional) Ideal For chips – still commented out */}
         {/*
@@ -142,7 +142,7 @@ export const ProductCard = ({ product, onAddToEnquiry }: ProductCardProps) => {
         {/* Controls (right under Key Features now) */}
         <div className="space-y-3 mt-2">
           {/* Variant select */}
-          <Select value={selectedVariant} onValueChange={setSelectedVariant}>
+          {/* <Select value={selectedVariant} onValueChange={setSelectedVariant}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select pack size" />
             </SelectTrigger>
@@ -153,10 +153,10 @@ export const ProductCard = ({ product, onAddToEnquiry }: ProductCardProps) => {
                 </SelectItem>
               ))}
             </SelectContent>
-          </Select>
+          </Select> */}
 
           {/* Quantity controls */}
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <Button
               variant="outline"
               size="icon"
@@ -178,7 +178,7 @@ export const ProductCard = ({ product, onAddToEnquiry }: ProductCardProps) => {
             >
               <Plus className="h-4 w-4" />
             </Button>
-          </div>
+          </div> */}
 
           {/* CTA */}
           <Button

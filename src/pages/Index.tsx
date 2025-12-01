@@ -12,6 +12,7 @@ import { TissueBoxAnimation } from "@/components/TissueBoxAnimation";
 import { Product } from "@/components/ProductCard";
 import { useToast } from "@/hooks/use-toast";
 import { Footer } from "@/components/Footer";
+import CertificationsSection from "@/components/certifications";
 
 const Index = () => {
   const [cartOpen, setCartOpen] = useState(false);
@@ -73,6 +74,7 @@ const Index = () => {
       <Navigation onCartOpen={() => setCartOpen(true)} cartItemCount={cartItems.length} />
       <Hero />
       
+      <CertificationsSection />
       <Products onAddToEnquiry={handleAddToEnquiry} />
       <Quality />
       <B2B onEnquiryOpen={() => setCartOpen(true)} />

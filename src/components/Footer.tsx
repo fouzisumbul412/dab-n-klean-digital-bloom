@@ -6,7 +6,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 
 // ⬇️ Update this path to your real logo file if needed
-import dnkLogo from "/images/DNK-logo.webp";
+import dnkLogo from "/images/DNK-logo-new.png";
 
 export const Footer = () => {
   useEffect(() => {
@@ -226,11 +226,11 @@ export const Footer = () => {
               <div>
                 <p className="font-semibold text-white/95">Address</p>
                 <p className="text-white/90 leading-relaxed">
-                  DAB&apos;N&apos;KLEAN Headquarters
-                  <br />
-                  123 Hygiene Avenue, Business District
-                  <br />
-                  City, State 12345
+                 7-3-72/1, Old Kurnool Rd, 
+                      <br />
+                       Telangana NGOS Colony, Katedhan,
+                      <br />
+                      Hyderabad, Telangana 500077
                 </p>
               </div>
             </div>

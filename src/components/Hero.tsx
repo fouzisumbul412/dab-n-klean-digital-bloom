@@ -1,121 +1,165 @@
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
+"use client";
+
+import { useEffect, useRef, MouseEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Droplets, Shield, Leaf } from "lucide-react";
-import heroImage from "/images/dnk.jpg";
+
+// Import 2 hero images
+import heroDesktop from "/images/dnk.jpg";
+import heroMobile from "/images/dnk-mob.jpg";
+
+interface FeatureCardProps {
+  icon: React.ElementType;
+  title: string;
+  text: string;
+  delayMs?: number;
+}
+
+const FeatureCard = ({ icon: Icon, title, text, delayMs = 0 }: FeatureCardProps) => {
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    card.style.setProperty("--mx", `${x}px`);
+    card.style.setProperty("--my", `${y}px`);
+  };
+
+  const handleMouseLeave = (e: MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    card.style.setProperty("--mx", `50%`);
+    card.style.setProperty("--my", `50%`);
+  };
+
+  return (
+    <div
+      className={`
+        hero-card aos-item opacity-0 translate-y-6
+        transition-all duration-700 ease-out
+        group relative rounded-xl glass-card
+        p-5 sm:p-6
+        min-w-[78%] xs:min-w-[75%]
+        snap-center
+        sm:min-w-0
+        overflow-hidden
+        cursor-default
+        will-change-transform
+        hover:-translate-y-2 hover:scale-105 hover:shadow-xl
+      `}
+      style={{
+        transitionDelay: `${delayMs}ms`,
+        // soft pastel blue glow instead of pink
+        backgroundImage:
+          "radial-gradient(420px circle at var(--mx,50%) var(--my,50%), rgba(183,233,246,0.45), transparent 55%)",
+      }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      <div className="relative z-10">
+        <Icon className="hero-card-icon h-10 w-10 text-primary mx-auto mb-3" />
+        <h3 className="hero-card-title font-semibold text-foreground mb-2">
+          {title}
+        </h3>
+        <p className="hero-card-text text-sm text-muted-foreground">{text}</p>
+      </div>
+    </div>
+  );
+};
 
 export const Hero = () => {
   const heroRef = useRef<HTMLDivElement>(null);
-  const headlineRef = useRef<HTMLHeadingElement>(null);
-  const subheadRef = useRef<HTMLParagraphElement>(null);
-  const ctaRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
 
+  // AOS animation
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+    const section = heroRef.current;
+    if (!section) return;
 
-      tl.from(headlineRef.current, {
-        y: 50,
-        opacity: 0,
-        duration: 0.8,
-      })
-        .from(
-          subheadRef.current,
-          {
-            y: 30,
-            opacity: 0,
-            duration: 0.6,
-          },
-          "-=0.4"
-        )
-        .from(
-          ctaRef.current,
-          {
-            y: 20,
-            opacity: 0,
-            duration: 0.6,
-          },
-          "-=0.3"
-        )
-        .from(
-          ".value-card",
-          {
-            scale: 0.8,
-            opacity: 0,
-            duration: 0.5,
-            stagger: 0.1,
-          },
-          "-=0.2"
-        );
-    }, heroRef);
+    const items = section.querySelectorAll<HTMLElement>(".aos-item");
 
-    return () => ctx.revert();
+    items.forEach((el) => {
+      el.classList.add("opacity-0", "translate-y-6");
+    });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const el = entry.target as HTMLElement;
+            el.classList.remove("opacity-0", "translate-y-6");
+            el.classList.add("opacity-100", "translate-y-0");
+            observer.unobserve(el);
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    items.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
   }, []);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
+    if (element) element.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <section
       id="home"
       ref={heroRef}
-      className="relative min-h-screen pt-20 bg-[#FFE7E8] overflow-hidden"
+      className="relative min-h-screen pt-20 sm:pt-10 md:pt-2 lg:pt-20 bg-background overflow-hidden"
     >
-      {/* TOP IMAGE BLOCK – fixed height, anchored from bottom */}
-      <div className="w-full bg-[#FFE7E8]">
+      {/* HERO IMAGE BLOCK */}
+      <div className="w-full bg-background">
         <div
           className="
             relative w-full
-            h-[460px] sm:h-[520px] md:h-[700px] lg:h-[740px]
+            h-[420px] sm:h-[460px] md:h-[520px] lg:h-[740px]
           "
         >
+          {/* MOBILE IMAGE */}
           <div
-            className="absolute inset-0 bg-cover bg-bottom"
+            className="absolute inset-0 bg-cover bg-bottom md:hidden"
             style={{
-              backgroundImage: `url(${heroImage})`,
+              backgroundImage: `url(${heroMobile})`,
+            }}
+          />
+
+          {/* DESKTOP IMAGE */}
+          <div
+            className="absolute inset-0 bg-cover bg-bottom hidden md:block"
+            style={{
+              backgroundImage: `url(${heroDesktop})`,
             }}
           />
         </div>
       </div>
 
-      {/* FULL-WIDTH GLASS BAR – overlaps the image */}
-      <div
-        className="
-          relative w-full
-          -mt-16 sm:-mt-24 md:-mt-32 lg:-mt-64
-         
-          
-          
-        "
-      >
-        {/* Inner content container (centers text/cards) */}
+      {/* CONTENT BAR */}
+      <div className="relative w-full -mt-28 sm:-mt-28 md:-mt-96 lg:-mt-64">
         <div className="container mx-auto px-4 pb-6 pt-8 md:pt-10">
           <div className="max-w-4xl mx-auto text-center">
             <h1
-              ref={headlineRef}
-              className="text-3xl md:text-[43px] font-bold text-foreground mb-7"
+              className="
+                aos-item opacity-0 translate-y-6
+                transition-all duration-700 ease-out
+                text-3xl md:text-4xl font-bold text-foreground mb-7
+              "
             >
-              DAB&apos;N&apos;KLEAN — Softness You Feel.{" "} <br />
-              <span className="text-primary">Hygiene You Trust.</span>
+              DAB&apos;N&apos;KLEAN — Softness You Feel. <br />
+              <span className="text-primary-foreground">
+                Hygiene You Trust.
+              </span>
             </h1>
 
-            {/* <p
-              ref={subheadRef}
-              className="text-base sm:text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto"
-            >
-              Premium tissue and hygiene products for every need. From kitchens
-              to bathrooms, offices to restaurants — experience the perfect
-              blend of comfort and cleanliness.
-            </p> */}
-
             <div
-              ref={ctaRef}
-              className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
+              className="
+                aos-item opacity-0 translate-y-6
+                transition-all duration-700 ease-out
+                flex flex-col sm:flex-row gap-4 justify-center mb-16
+              "
+              style={{ transitionDelay: "120ms" }}
             >
               <Button
                 size="lg"
@@ -124,6 +168,7 @@ export const Hero = () => {
               >
                 Explore Products
               </Button>
+
               <Button
                 size="lg"
                 variant="outline"
@@ -134,47 +179,46 @@ export const Hero = () => {
               </Button>
             </div>
 
+            {/* VALUE CARDS */}
             <div
-              ref={cardsRef}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-5"
+              className="
+                flex gap-4 overflow-x-auto pb-4 pt-5 mb-4
+                snap-x snap-mandatory
+                -mx-4 px-4
+                sm:mx-0 sm:px-0
+                sm:overflow-visible
+                sm:grid sm:grid-cols-2 lg:grid-cols-4
+              "
+              style={{ scrollbarWidth: "none" }}
             >
-              <div className="value-card glass-card rounded-lg p-6 hover:scale-105 transition-transform">
-                <Sparkles className="h-10 w-10 text-primary mx-auto mb-3" />
-                <h3 className="font-semibold text-foreground mb-2">Ultra Soft</h3>
-                <p className="text-sm text-muted-foreground">
-                  Gentle on sensitive skin
-                </p>
-              </div>
+              <style>{`
+                #home ::-webkit-scrollbar { display: none; }
+              `}</style>
 
-              <div className="value-card glass-card rounded-lg p-6 hover:scale-105 transition-transform">
-                <Droplets className="h-10 w-10 text-primary mx-auto mb-3" />
-                <h3 className="font-semibold text-foreground mb-2">
-                  Highly Absorbent
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Maximum cleaning power
-                </p>
-              </div>
-
-              <div className="value-card glass-card rounded-lg p-6 hover:scale-105 transition-transform">
-                <Shield className="h-10 w-10 text-primary mx-auto mb-3" />
-                <h3 className="font-semibold text-foreground mb-2">
-                  Dermatologically Tested
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Safe for all skin types
-                </p>
-              </div>
-
-              <div className="value-card glass-card rounded-lg p-6 hover:scale-105 transition-transform">
-                <Leaf className="h-10 w-10 text-primary mx-auto mb-3" />
-                <h3 className="font-semibold text-foreground mb-2">
-                  Eco-Conscious
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Responsibly sourced materials
-                </p>
-              </div>
+              <FeatureCard
+                icon={Sparkles}
+                title="Ultra Soft"
+                text="Gentle on sensitive skin"
+                delayMs={0}
+              />
+              <FeatureCard
+                icon={Droplets}
+                title="Highly Absorbent"
+                text="Maximum cleaning power"
+                delayMs={80}
+              />
+              <FeatureCard
+                icon={Shield}
+                title="Dermatologically Tested"
+                text="Safe for all skin types"
+                delayMs={160}
+              />
+              <FeatureCard
+                icon={Leaf}
+                title="Eco-Conscious"
+                text="Responsibly sourced materials"
+                delayMs={240}
+              />
             </div>
           </div>
         </div>

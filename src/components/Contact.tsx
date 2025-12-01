@@ -129,11 +129,11 @@ export const Contact = () => {
                       Visit Us
                     </h4>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      DAB&apos;N&apos;KLEAN Headquarters
+                       7-3-72/1, Old Kurnool Rd, 
                       <br />
-                      123 Hygiene Avenue, Business District
+                       Telangana NGOS Colony, Katedhan,
                       <br />
-                      City, State 12345
+                      Hyderabad, Telangana 500077
                     </p>
                   </div>
                 </div>
