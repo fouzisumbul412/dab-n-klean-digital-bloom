@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { submitForm } from "@/lib/submitForm";
 
 export interface CartItem {
   id: string;
@@ -50,25 +51,33 @@ export const EnquiryCart = ({
     city: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Enquiry Submitted Successfully!",
-      description:
-        "Thank you! Our DAB'N'KLEAN team will contact you shortly with pricing and details.",
-    });
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      businessType: "",
-      companyName: "",
-      city: "",
-      message: "",
-    });
-    onClearCart();
-    onClose();
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
+    try {
+      await submitForm({
+        formType: "EnquiryCart",
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        message: formData.message,
+        extra: `${formData.businessType} | ${formData.companyName} | ${formData.city}`,
+        cart: items,
+      });
+
+      toast({ title: "Enquiry Submitted Successfully!" });
+      onClearCart();
+      onClose();
+    } catch {
+      toast({ title: "Submission failed", variant: "destructive" });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -147,7 +156,10 @@ export const EnquiryCart = ({
                           min="1"
                           value={item.quantity}
                           onChange={(e) =>
-                            onUpdateQuantity(item.id, parseInt(e.target.value) || 1)
+                            onUpdateQuantity(
+                              item.id,
+                              parseInt(e.target.value) || 1
+                            )
                           }
                           className="mt-1"
                         />
@@ -160,7 +172,9 @@ export const EnquiryCart = ({
                         <Textarea
                           id={`notes-${item.id}`}
                           value={item.notes}
-                          onChange={(e) => onUpdateNotes(item.id, e.target.value)}
+                          onChange={(e) =>
+                            onUpdateNotes(item.id, e.target.value)
+                          }
                           placeholder="Special requirements..."
                           rows={2}
                           className="mt-1"
@@ -237,12 +251,17 @@ export const EnquiryCart = ({
                   </div>
 
                   <div>
-                    <Label htmlFor="cart-company">Company Name (if Business)</Label>
+                    <Label htmlFor="cart-company">
+                      Company Name (if Business)
+                    </Label>
                     <Input
                       id="cart-company"
                       value={formData.companyName}
                       onChange={(e) =>
-                        setFormData({ ...formData, companyName: e.target.value })
+                        setFormData({
+                          ...formData,
+                          companyName: e.target.value,
+                        })
                       }
                     />
                   </div>
@@ -260,7 +279,9 @@ export const EnquiryCart = ({
                   </div>
 
                   <div>
-                    <Label htmlFor="cart-message">Additional Requirements</Label>
+                    <Label htmlFor="cart-message">
+                      Additional Requirements
+                    </Label>
                     <Textarea
                       id="cart-message"
                       value={formData.message}
@@ -271,10 +292,41 @@ export const EnquiryCart = ({
                       rows={3}
                     />
                   </div>
-
-                  <Button type="submit" className="w-full" size="lg">
-                    <Send className="h-4 w-4 mr-2" />
-                    Submit Enquiry
+                  <Button
+                    type="submit"
+                    size="lg"
+                    disabled={isSubmitting}
+                    className="w-full disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <svg
+                          className="h-4 w-4 animate-spin"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                          />
+                        </svg>
+                        Submitting…
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center gap-2">
+                        <Send className="h-4 w-4" />
+                        Submit Enquiry
+                      </span>
+                    )}
                   </Button>
                 </form>
               </div>

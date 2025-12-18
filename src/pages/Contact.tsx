@@ -11,10 +11,12 @@ import "aos/dist/aos.css";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 import { FallingPattern } from "@/components/ui/falling-pattern";
 import { motion } from "motion/react";
+import { submitForm } from "@/lib/submitForm";
 
 const ContactPage = () => {
   const [cartItems] = useState<any[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     AOS.init({
@@ -26,10 +28,31 @@ const ContactPage = () => {
     AOS.refresh();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: hook this up to your API / email service
-    console.log("Contact form submitted");
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
+    const form = e.currentTarget;
+    const data = new FormData(form);
+
+    try {
+      await submitForm({
+        formType: "ContactPage",
+        name: String(data.get("name")),
+        email: String(data.get("email")),
+        phone: String(data.get("phone")),
+        message: String(data.get("message")),
+        extra: String(data.get("extra")),
+      });
+
+      form.reset();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -80,8 +103,8 @@ const ContactPage = () => {
               data-aos="fade-up"
               data-aos-delay="210"
             >
-              Have a question, bulk order enquiry, or partnership idea? We&apos;re
-              just a message away.
+              Have a question, bulk order enquiry, or partnership idea?
+              We&apos;re just a message away.
             </p>
           </div>
         </section>
@@ -92,8 +115,8 @@ const ContactPage = () => {
           data-aos="fade-up"
           data-aos-duration="800"
         > */}
-        
-          <AuroraBackground>
+
+        <AuroraBackground>
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -107,201 +130,234 @@ const ContactPage = () => {
             data-aos="fade-up"
             data-aos-duration="800"
           >
-            
-          <div className="container mx-auto px-4 max-w-5xl">
-            <div
-              className="mb-10 text-center"
-              data-aos="fade-up"
-              data-aos-delay="60"
-            >
-              <p className="text-xs uppercase tracking-[0.25em] text-primary mb-3">
-                Get In Touch
-              </p>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                We&apos;d Love to Hear From You
-              </h2>
-              <p className="text-sm md:text-base text-muted-foreground max-w-3xl mx-auto">
-                Whether you&apos;re a household customer, HoReCa partner, or
-                distributor, our team is ready to support you with product
-                information, pricing, and customised solutions.
-              </p>
-            </div>
-
-            <div className="grid gap-10 md:grid-cols-[minmax(0,1.05fr)_minmax(0,1.2fr)] items-start">
-              {/* Contact Info */}
+            <div className="container mx-auto px-4 max-w-5xl">
               <div
-                className="space-y-6 rounded-3xl bg-accent/30 border border-primary/10 p-6 md:p-7"
-                data-aos="fade-right"
-                data-aos-delay="100"
+                className="mb-10 text-center"
+                data-aos="fade-up"
+                data-aos-delay="60"
               >
-                <h3 className="text-lg md:text-xl font-semibold text-foreground mb-1">
-                  Reach Us Directly
-                </h3>
-                <p className="text-sm md:text-base text-muted-foreground">
-                  Prefer to talk to a human? Call, email, or visit us — we&apos;re
-                  happy to help you pick the right hygiene solutions.
+                <p className="text-xs uppercase tracking-[0.25em] text-primary mb-3">
+                  Get In Touch
                 </p>
-
-                <div className="space-y-4 text-sm md:text-base">
-                  <div className="flex gap-3">
-                    <div className="mt-1 inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                      <Phone className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                        Call Us
-                      </p>
-                      <p className="font-medium text-foreground">
-                       +91 9618477733
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-3">
-                    <div className="mt-1 inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                      <Mail className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                        Email
-                      </p>
-                      <p className="font-medium text-foreground break-all">
-                        Retail@dabnklean.com
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-3">
-                    <div className="mt-1 inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                      <MapPin className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                        Address
-                      </p>
-                      <p className="font-medium text-foreground">
-                        DAB&apos;N&apos;KLEAN HQ
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        7-3-72/1, Old Kurnool Rd,
-                         <br />
-Telangana NGOS Colony, Katedhan,
-
-                        <br />
-                        Hyderabad, Telangana 500077
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t border-primary/10">
-                  <p className="text-xs md:text-sm text-muted-foreground">
-                    Business Hours:
-                  </p>
-                  <p className="text-sm text-foreground">
-                    Monday – Saturday: 10:00 AM – 7:00 PM
-                  </p>
-                </div>
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                  We&apos;d Love to Hear From You
+                </h2>
+                <p className="text-sm md:text-base text-muted-foreground max-w-3xl mx-auto">
+                  Whether you&apos;re a household customer, HoReCa partner, or
+                  distributor, our team is ready to support you with product
+                  information, pricing, and customised solutions.
+                </p>
               </div>
 
-              {/* Contact Form */}
-              <div
-                className="rounded-3xl bg-background border border-primary/10 shadow-sm p-6 md:p-8"
-                data-aos="fade-left"
-                data-aos-delay="140"
-              >
-                <h3 className="text-lg md:text-xl font-semibold text-foreground mb-4">
-                  Send Us a Message
-                </h3>
-                <form className="space-y-4" onSubmit={handleSubmit}>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div>
-                      <label className="block text-xs font-medium text-muted-foreground mb-1.5">
-                        Full Name
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm md:text-base text-foreground focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary/60 transition"
-                        placeholder="Enter your name"
-                      />
+              <div className="grid gap-10 md:grid-cols-[minmax(0,1.05fr)_minmax(0,1.2fr)] items-start">
+                {/* Contact Info */}
+                <div
+                  className="space-y-6 rounded-3xl bg-accent/30 border border-primary/10 p-6 md:p-7"
+                  data-aos="fade-right"
+                  data-aos-delay="100"
+                >
+                  <h3 className="text-lg md:text-xl font-semibold text-foreground mb-1">
+                    Reach Us Directly
+                  </h3>
+                  <p className="text-sm md:text-base text-muted-foreground">
+                    Prefer to talk to a human? Call, email, or visit us —
+                    we&apos;re happy to help you pick the right hygiene
+                    solutions.
+                  </p>
+
+                  <div className="space-y-4 text-sm md:text-base">
+                    <div className="flex gap-3">
+                      <div className="mt-1 inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                        <Phone className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                          Call Us
+                        </p>
+                        <p className="font-medium text-foreground">
+                          +91 9618477733
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-xs font-medium text-muted-foreground mb-1.5">
-                        Email Address
-                      </label>
-                      <input
-                        type="email"
-                        required
-                        className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm md:text-base text-foreground focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary/60 transition"
-                        placeholder="you@example.com"
-                      />
+
+                    <div className="flex gap-3">
+                      <div className="mt-1 inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                        <Mail className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                          Email
+                        </p>
+                        <p className="font-medium text-foreground break-all">
+                          Retail@dabnklean.com
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3">
+                      <div className="mt-1 inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                        <MapPin className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                          Address
+                        </p>
+                        <p className="font-medium text-foreground">
+                          DAB&apos;N&apos;KLEAN HQ
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          7-3-72/1, Old Kurnool Rd,
+                          <br />
+                          Telangana NGOS Colony, Katedhan,
+                          <br />
+                          Hyderabad, Telangana 500077
+                        </p>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div>
-                      <label className="block text-xs font-medium text-muted-foreground mb-1.5">
-                        Phone Number
-                      </label>
-                      <input
-                        type="tel"
-                        className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm md:text-base text-foreground focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary/60 transition"
-                        placeholder="+91 ..."
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-muted-foreground mb-1.5">
-                        Type of Enquiry
-                      </label>
-                      <select
-                        className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm md:text-base text-foreground focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary/60 transition"
-                        defaultValue=""
-                      >
-                        <option value="" disabled>
-                          Select an option
-                        </option>
-                        <option value="retail">Retail / Household</option>
-                        <option value="horeca">HoReCa / Bulk</option>
-                        <option value="distribution">Distribution / Dealer</option>
-                        <option value="other">Other</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-medium text-muted-foreground mb-1.5">
-                      Message
-                    </label>
-                    <textarea
-                      required
-                      rows={4}
-                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm md:text-base text-foreground focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary/60 transition resize-none"
-                      placeholder="Tell us how we can help you..."
-                    />
-                  </div>
-
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2">
-                    <p className="text-[11px] md:text-xs text-muted-foreground max-w-xs">
-                      By submitting this form, you agree to be contacted by our
-                      team regarding DAB&apos;N&apos;KLEAN products and services.
+                  <div className="pt-4 border-t border-primary/10">
+                    <p className="text-xs md:text-sm text-muted-foreground">
+                      Business Hours:
                     </p>
-                    <Button
-                      type="submit"
-                      size="lg"
-                      className="bg-primary text-primary-foreground hover:bg-primary/90"
-                    >
-                      Submit Enquiry
-                    </Button>
+                    <p className="text-sm text-foreground">
+                      Monday – Saturday: 10:00 AM – 7:00 PM
+                    </p>
                   </div>
-                </form>
+                </div>
+
+                {/* Contact Form */}
+                <div
+                  className="rounded-3xl bg-background border border-primary/10 shadow-sm p-6 md:p-8"
+                  data-aos="fade-left"
+                  data-aos-delay="140"
+                >
+                  <h3 className="text-lg md:text-xl font-semibold text-foreground mb-4">
+                    Send Us a Message
+                  </h3>
+                  <form className="space-y-4" onSubmit={handleSubmit}>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1.5">
+                          Full Name
+                        </label>
+                        <input
+                          type="text"
+                          name="name"
+                          required
+                          className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm md:text-base text-foreground focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary/60 transition"
+                          placeholder="Enter your name"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1.5">
+                          Email Address
+                        </label>
+                        <input
+                          type="email"
+                          name="email"
+                          required
+                          className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm md:text-base text-foreground focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary/60 transition"
+                          placeholder="you@example.com"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1.5">
+                          Phone Number
+                        </label>
+                        <input
+                          type="tel"
+                          name="phone"
+                          required
+                          className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm md:text-base text-foreground focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary/60 transition"
+                          placeholder="+91 ..."
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1.5">
+                          Type of Enquiry
+                        </label>
+                        <select
+                          name="extra"
+                          className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm md:text-base text-foreground focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary/60 transition"
+                          defaultValue=""
+                        >
+                          <option value="" disabled>
+                            Select an option
+                          </option>
+                          <option value="retail">Retail / Household</option>
+                          <option value="horeca">HoReCa / Bulk</option>
+                          <option value="distribution">
+                            Distribution / Dealer
+                          </option>
+                          <option value="other">Other</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-medium text-muted-foreground mb-1.5">
+                        Message
+                      </label>
+                      <textarea
+                        name="message"
+                        required
+                        rows={4}
+                        className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm md:text-base text-foreground focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary/60 transition resize-none"
+                        placeholder="Tell us how we can help you..."
+                      />
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2">
+                      <p className="text-[11px] md:text-xs text-muted-foreground max-w-xs">
+                        By submitting this form, you agree to be contacted by
+                        our team regarding DAB&apos;N&apos;KLEAN products and
+                        services.
+                      </p>
+                      <Button
+                        type="submit"
+                        size="lg"
+                        disabled={isSubmitting}
+                        className="bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-70 disabled:cursor-not-allowed"
+                      >
+                        {isSubmitting ? (
+                          <span className="flex items-center gap-2">
+                            <svg
+                              className="h-4 w-4 animate-spin"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                            >
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              />
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                              />
+                            </svg>
+                            Submitting…
+                          </span>
+                        ) : (
+                          "Submit Enquiry"
+                        )}
+                      </Button>
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
-          </div>
-           
           </motion.div>
         </AuroraBackground>
-        
+
         {/* </section> */}
 
         {/* GOOGLE MAP + CTA SECTION */}
@@ -332,8 +388,8 @@ Telangana NGOS Colony, Katedhan,
                 </h2>
                 <p className="text-sm md:text-base text-muted-foreground mb-5">
                   Drop by our office to discuss bulk orders, explore our full
-                  product range, or simply say hello to the DAB&apos;N&apos;KLEAN
-                  team.
+                  product range, or simply say hello to the
+                  DAB&apos;N&apos;KLEAN team.
                 </p>
 
                 <div className="flex flex-wrap gap-3">

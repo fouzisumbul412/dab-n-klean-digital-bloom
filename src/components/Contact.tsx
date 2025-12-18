@@ -14,10 +14,13 @@ import { Mail, Phone, MapPin } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { submitForm } from "@/lib/submitForm";
 
 export const Contact = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -34,20 +37,35 @@ export const Contact = () => {
     });
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Enquiry Submitted!",
-      description:
-        "Thank you for contacting DAB'N'KLEAN. We'll get back to you shortly.",
-    });
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      inquiryType: "",
-      message: "",
-    });
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
+    try {
+      await submitForm({
+        formType: "Contact",
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        message: formData.message,
+        extra: formData.inquiryType,
+      });
+
+      toast({ title: "Enquiry Submitted!" });
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        inquiryType: "",
+        message: "",
+      });
+    } catch {
+      toast({ title: "Submission failed", variant: "destructive" });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (
@@ -120,7 +138,11 @@ export const Contact = () => {
               </div>
 
               <div className="space-y-5">
-                <div className="flex items-start gap-3" data-aos="fade-up" data-aos-delay="180">
+                <div
+                  className="flex items-start gap-3"
+                  data-aos="fade-up"
+                  data-aos-delay="180"
+                >
                   <div className="mt-1 flex h-10 w-10 items-center justify-center rounded-2xl bg-accent/10">
                     <MapPin className="h-5 w-5 text-primary" />
                   </div>
@@ -129,16 +151,20 @@ export const Contact = () => {
                       Visit Us
                     </h4>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                       7-3-72/1, Old Kurnool Rd, 
+                      7-3-72/1, Old Kurnool Rd,
                       <br />
-                       Telangana NGOS Colony, Katedhan,
+                      Telangana NGOS Colony, Katedhan,
                       <br />
                       Hyderabad, Telangana 500077
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3" data-aos="fade-up" data-aos-delay="210">
+                <div
+                  className="flex items-start gap-3"
+                  data-aos="fade-up"
+                  data-aos-delay="210"
+                >
                   <div className="mt-1 flex h-10 w-10 items-center justify-center rounded-2xl bg-accent/10">
                     <Mail className="h-5 w-5 text-primary" />
                   </div>
@@ -152,7 +178,11 @@ export const Contact = () => {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3" data-aos="fade-up" data-aos-delay="240">
+                <div
+                  className="flex items-start gap-3"
+                  data-aos="fade-up"
+                  data-aos-delay="240"
+                >
                   <div className="mt-1 flex h-10 w-10 items-center justify-center rounded-2xl bg-accent/10">
                     <Phone className="h-5 w-5 text-primary" />
                   </div>
@@ -163,7 +193,6 @@ export const Contact = () => {
                     <p className="text-sm text-muted-foreground">
                       +91 9618477733
                     </p>
-                    
                   </div>
                 </div>
               </div>
@@ -252,9 +281,7 @@ export const Contact = () => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="general">General Inquiry</SelectItem>
-                      <SelectItem value="household">
-                        Household Order
-                      </SelectItem>
+                      <SelectItem value="household">Household Order</SelectItem>
                       <SelectItem value="b2b">B2B / Bulk Order</SelectItem>
                       <SelectItem value="distributor">
                         Distributor Interest
@@ -278,8 +305,38 @@ export const Contact = () => {
                 </div>
 
                 <div data-aos="fade-up" data-aos-delay="380">
-                  <Button type="submit" className="w-full" size="lg">
-                    Submit Enquiry
+                  <Button
+                    type="submit"
+                    size="lg"
+                    disabled={isSubmitting}
+                    className="w-full disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <svg
+                          className="h-4 w-4 animate-spin"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                          />
+                        </svg>
+                        Submitting…
+                      </span>
+                    ) : (
+                      "Submit Enquiry"
+                    )}
                   </Button>
                 </div>
               </form>
